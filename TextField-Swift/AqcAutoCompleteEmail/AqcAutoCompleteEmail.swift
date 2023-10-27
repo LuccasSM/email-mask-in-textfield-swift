@@ -204,11 +204,10 @@ public class AqcAutoCompleteEmail: UITextField {
         
         // obter reto para o texto real
 //        let endRange = self.position(from: endOfDocument, offset: 1) ?? endOfDocument
-        
         guard let textRange = textRange(from: beginningOfDocument, to: endOfDocument) else { return .zero }
         
-//        let tRect = firstRect(for: textRange).integral
-        let tRect = caretRect(for: endOfDocument).integral
+//        let tRect = caretRect(for: endOfDocument).integral
+        let tRect = firstRect(for: textRange).integral
         
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byCharWrapping
@@ -222,14 +221,20 @@ public class AqcAutoCompleteEmail: UITextField {
         let autoCompleteRectSize = CGSize(width: textRectBounds.width - prefixTextRect.width, height: textRectBounds.height)
         let autoCompleteTextRect = autocompleteString.boundingRect(with: autoCompleteRectSize, options: drawingOptions, attributes: textAttributes, context: nil)
         
-        let xOrigin = tRect.maxX + xOffsetCorrection
+        let rectX = tRect.maxX + xOffsetCorrection
+        let newOffset = CGFloat(Int(rectX) % 14)
+        
+        let xOrigin = rectX + 4.5
         let actfLabelFrame = actfLabel.frame
         let finalX = xOrigin + autoCompleteTextRect.width
         let finalY = textRectBounds.minY + ((textRectBounds.height - actfLabelFrame.height) / 2) - yOffsetCorrection
         
-        print("-----> \(prefixTextRect.width) prefixTextRect")
+//        print("-----> \(prefixTextRect.width) prefixTextRect")
         print("-----> \(xOrigin) xOrigin")
         print("-----> \(tRect.width), \(tRect.maxX) tRect")
+//        let x = Int(tRect.maxX) % 14
+//        print("-----> \(x) x")
+        print("-----> \((xOffsetCorrection < newOffset ? xOffsetCorrection : newOffset)) newOffset")
         
         if finalX >= textRectBounds.width {
             let autoCompleteRect = CGRect(x: textRectBounds.width, y: finalY, width: 0, height: actfLabelFrame.height)
